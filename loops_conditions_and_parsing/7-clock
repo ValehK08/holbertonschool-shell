@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# WTH IS THIS?! WTH AM I DOING WITH MY LIFE?
+count=0
+while [ $count -le 12 ]
+do
+	echo "Hour: $count"
+	countt=1
+	while [ $countt -le 59 ]
+	do
+		echo "$countt"
+		countt=$((countt+1))
+	done
+	count=$((count+1))
+done
