@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 # It was easy enough to not worry about...
-for file in $(ls); do
-	echo "$file" | cut -d'-' -f2-
+for file in *; do
+	echo "${file#*-}"
 done
