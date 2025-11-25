@@ -1,22 +1,30 @@
-#!/usr/bin/env bash
-# Hm
+#!/bin/bash
 
-if [ "$1" == "start" ]
-then
-	./manage_my_process &
-	 echo $$ > /var/run/my_process.pid
-	echo "manage_my_process started"
-elif [ "$1" == "stop" ]
-then
-	kill "$(pgrep -f /manage_my_process)"
-	rm -f /var/run/my_process.pid
-	echo "manage_my_process stopped"
-elif [ "$1" == "restart" ]
-then
-	rm -f /var/run/my_process.pid
-	./manage_my_process &
-	echo $$ > /var/run/my_process.pid
-	echo "manage_my_process restarted"
-else
-	echo "Usage: manage_my_process {start|stop|restart}"
-fi
+PIDFILE="/var/run/my_process.pid"
+
+case "$1" in
+  start)
+    ./manage_my_process &
+    echo $! > "$PIDFILE"
+    echo "manage_my_process started"
+    ;;
+  stop)
+    if [ -f "$PIDFILE" ]; then
+      kill "$(cat $PIDFILE)"
+      rm -f "$PIDFILE"
+    fi
+    echo "manage_my_process stopped"
+    ;;
+  restart)
+    if [ -f "$PIDFILE" ]; then
+      kill "$(cat $PIDFILE)"
+      rm -f "$PIDFILE"
+    fi
+    ./manage_my_process &
+    echo $! > "$PIDFILE"
+    echo "manage_my_process restarted"
+    ;;
+  *)
+    echo "Usage: manage_my_process {start|stop|restart}"
+    ;;
+esac
