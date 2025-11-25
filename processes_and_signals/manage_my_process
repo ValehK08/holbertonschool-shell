@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-# manage_my_process
+# Hm
 
-trap 'exit 0' SIGTERM SIGINT
-
-while true; do
+while true
+do
   echo "I am alive!" >> /tmp/my_process
   sleep 2
 done
