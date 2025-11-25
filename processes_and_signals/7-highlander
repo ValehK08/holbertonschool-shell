@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# My brain is not braining
+while true
+do
+	echo "To infinity and beyond"
+	sleep 2
+	trap "I am invincible!!!" SIGTERM
+done
