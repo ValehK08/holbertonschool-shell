@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# Hm
 PIDFILE="/var/run/my_process.pid"
 
 case "$1" in
