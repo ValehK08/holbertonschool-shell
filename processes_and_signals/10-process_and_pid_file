@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # Hm
-echo "$$" > /var/run/myscript.pid
-function trmnt {
+echo $$ > /var/run/myscript.pid
+
+function term {
 	rm /var/run/myscript.pid
 	exit
 }
 
 trap 'echo "I hate the kill command"' SIGTERM
 trap 'echo "Y U no love me?!"' SIGINT
-trap trmnt SIGQUIT
+trap term SIGQUIT
 
 while true
 do
