@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Beheaded? What a word choice, huh?
+pkill -f 7-highlander
