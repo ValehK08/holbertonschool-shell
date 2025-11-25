@@ -1,27 +1,35 @@
 #!/usr/bin/env bash
-# Manage Processes
-startme()
-{
-    ./manage_my_process &
-    echo "$!" > /var/run/my_process.pid
-}
-stopme()
-{
-    sudo kill -15 "$(cat /var/run/my_process.pid)"
-    rm -f /var/run/my_process.pid
-}
+# Script to manage the background process: manage_my_process
+PID_FILE="/var/run/my_process.pid"
+PROCESS_SCRIPT="./manage_my_process"
 case "$1" in
-    start) startme
-	   echo "manage_my_process started"
-	   ;;
-    stop) stopme
-	  echo "manage_my_process stopped"
-	  ;;
-    restart) stopme
-	     startme
-             echo "manage_my_process restarted"
-	     ;;
-    *) echo "Usage: manage_my_process {start|stop|restart}"
-       ;;
+    start)
+        nohup "$PROCESS_SCRIPT" > /dev/null 2>&1 &
+        echo $! > "$PID_FILE"
+        echo "manage_my_process started"
+        ;;
+    stop)
+        if [ -f "$PID_FILE" ]; then
+            PID=$(cat "$PID_FILE")
+            if kill "$PID" 2>/dev/null; then
+                sleep 1
+            fi
+            rm -f "$PID_FILE"
+        fi
+        echo "manage_my_process stopped"
+        ;;
+    restart)
+        if [ -f "$PID_FILE" ]; then
+            PID=$(cat "$PID_FILE")
+            kill "$PID" 2>/dev/null
+            rm -f "$PID_FILE"
+        fi
+        nohup "$PROCESS_SCRIPT" > /dev/null 2>&1 &
+        echo $! > "$PID_FILE"
+        echo "manage_my_process restarted"
+        ;;
+    *)
+        echo "Usage: manage_my_process {start|stop|restart}"
+        exit 1
+        ;;
 esac
-exit 0
