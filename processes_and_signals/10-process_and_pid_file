@@ -1,18 +1,27 @@
 #!/usr/bin/env bash
 # Hm
-echo $$ > /var/run/myscript.pid
+PIDFILE="/var/run/myscript.pid"
+echo $$ > "$PIDFILE"
 
-function term {
-	rm /var/run/myscript.pid
-	exit
+sigterm_handler() {
+    echo "I hate the kill command"
+    rm -f "$PIDFILE"
+    exit 0
 }
 
-trap 'echo "I hate the kill command"' SIGTERM
-trap 'echo "Y U no love me?!"' SIGINT
-trap term SIGQUIT
+sigint_handler() {
+    echo "Y U no love me?!"
+}
 
-while true
-do
-	echo "To infinity and beyond"
-	sleep 2
+sigquit_handler() {
+    rm -f "$PIDFILE"
+    exit 0
+}
+trap sigterm_handler SIGTERM
+trap sigint_handler SIGINT
+trap sigquit_handler SIGQUIT
+
+while true; do
+    echo "To infinity and beyond"
+    sleep 2
 done
