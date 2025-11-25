@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 # Create PID file
-trap '' SIGHUP
 echo $! > /var/run/myscript.pid
-# Clean up PID file on exit
 cleanup() {
     rm -f /var/run/myscript.pid
     exit 0
 }
-# Signal handlers
 trap 'echo "I hate the kill command"; cleanup' SIGTERM
 trap 'echo "Y U no love me?!"; cleanup' SIGINT
 trap cleanup SIGQUIT
-# Main loop
 while true; do
     echo "To infinity and beyond"
     sleep 1
