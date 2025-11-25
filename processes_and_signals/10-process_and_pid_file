@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Hm
-PIDFILE="/var/run/myscript.pid"
+PIDFILE="/var/run/holbertonscript.pid"
 echo $$ > "$PIDFILE"
 
 sigterm_handler() {
