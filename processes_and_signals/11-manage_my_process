@@ -1,44 +1,35 @@
 #!/usr/bin/env bash
-# manage_my_process.
+# manage manage_my_process
 
-PIDFILE=/var/run/my_process.pid
-DAEMON="./manage_my_process"
-
-start_daemon() {
-  # Start in background and capture its PID
-  $DAEMON &>/dev/null &
-  echo $! > "$PIDFILE"
-}
-
-stop_daemon() {
-  if [ -f "$PIDFILE" ]; then
-    pid=$(cat "$PIDFILE")
-    kill "$pid" 2>/dev/null || true
-    rm -f "$PIDFILE"
-  else
-    # fallback: try to kill by process name (best-effort)
-    pkill -f "$(basename "$DAEMON")" 2>/dev/null || true
-  fi
-}
+PIDFILE="/var/run/my_process.pid"
+PROCESS="./manage_my_process"
 
 case "$1" in
   start)
-    start_daemon
+    $PROCESS &
+    echo $! > "$PIDFILE"
     echo "manage_my_process started"
     ;;
+
   stop)
-    stop_daemon
+    if [ -f "$PIDFILE" ]; then
+      kill "$(cat "$PIDFILE")"
+      rm -f "$PIDFILE"
+    fi
     echo "manage_my_process stopped"
     ;;
+
   restart)
-    stop_daemon
-    # small pause to let kernel clean up the old PID (optional)
-    sleep 1
-    start_daemon
+    if [ -f "$PIDFILE" ]; then
+      kill "$(cat "$PIDFILE")"
+      rm -f "$PIDFILE"
+    fi
+    $PROCESS &
+    echo $! > "$PIDFILE"
     echo "manage_my_process restarted"
     ;;
+
   *)
     echo "Usage: manage_my_process {start|stop|restart}"
-    exit 1
     ;;
 esac
