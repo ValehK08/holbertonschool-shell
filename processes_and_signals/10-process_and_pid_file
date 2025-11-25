@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Create PID file
 trap '' SIGHUP
-echo $$ > /var/run/myscript.pid
+echo $! > /var/run/myscript.pid
 # Clean up PID file on exit
 cleanup() {
     rm -f /var/run/myscript.pid
