@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Life is like lines of Apache logs... complicated
+cat apache-access.log | awk -F' ' '{print $1 " "  $9}'
