@@ -1,40 +1,26 @@
 #!/usr/bin/env bash
-# 11-manage_my_process
+# manage_my_process.
 
-PIDFILE="/var/run/my_process.pid"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DAEMON="$SCRIPT_DIR/manage_my_process"
+if [ "$1" == "start" ]
+then
+  ./manage_my_process &
+  echo $$ > /var/run/my_process.pid
+  echo "manage_my_process started"
 
-case "$1" in
-  start)
-    # Start the daemon in background and write its PID
-    nohup "$DAEMON" >/dev/null 2>&1 &
-    echo $! > "$PIDFILE"
-    echo "manage_my_process started"
-    ;;
-  stop)
-    if [ -f "$PIDFILE" ]; then
-      PID=$(cat "$PIDFILE")
-      # try to terminate the process
-      kill "$PID" >/dev/null 2>&1 || true
-      rm -f "$PIDFILE"
-    fi
-    echo "manage_my_process stopped"
-    ;;
-  restart)
-    if [ -f "$PIDFILE" ]; then
-      PID=$(cat "$PIDFILE")
-      kill "$PID" >/dev/null 2>&1 || true
-      rm -f "$PIDFILE"
-    fi
-    nohup "$DAEMON" >/dev/null 2>&1 &
-    echo $! > "$PIDFILE"
-    echo "manage_my_process restarted"
-    ;;
-  *)
-    echo "Usage: manage_my_process {start|stop|restart}"
-    exit 1
-    ;;
-esac
+elif [ "$1" == "stop" ]
+then
+  kill "$(pgrep -f /manage_my_process)" 
+  rm /var/run/my_process.pid
+  echo "manage_my_process stopped"
 
-exit 0
+elif [ "$1" == "restart" ]
+then
+  kill "$(pgrep -f /manage_my_process)"
+  rm /var/run/my_process.pid
+  ./manage_my_process &
+  echo $$ > /var/run/my_process.pid
+  echo "manage_my_process restarted"
+
+else
+  echo "Usage: manage_my_process {start|stop|restart}"
+fi
