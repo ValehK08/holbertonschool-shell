@@ -1,2 +1,5 @@
 #!/bin/bash
-awk 'NR % 2 == 1'
+while IFS= read -r line; do
+    echo "$line"
+    IFS= read -r dummy_line
+done
